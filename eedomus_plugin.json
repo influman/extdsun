@@ -1,0 +1,119 @@
+{
+	"plugin_id": "extdsun",
+	"name_fr": "Soleil étendu",
+	"icon": "sun.png",
+	"version": "1.01",
+	"creation_date": "2017-10-26",
+	"modification_date": "2017-01-27",
+	"author": "Influman",
+	"description_fr": "Le Soleil, avec des phases supplémentaires décalées de x mn paramétrables<br>Avant levé, Se lève, Levé, Après levé, Avant couché, Se couche, Coucher, Après coucher",
+	"description_en": "",
+	"description_es": "",
+	"description_it": "",
+	"description_de": "",
+	"forum_link": "http://forum.eedomus.com/viewtopic.php?f=50&t=6047",
+	"parameters":
+  [
+		{
+			"parameter": "LAT", 
+			"description": "<a href='https://www.coordonnees-gps.fr' target='_blank'>Latitude</a> (Ex. Paris : 48.8534)",
+			"xtype": "textfield",
+			"default_value": "48.8534",
+			"field": "width:150, allowBlank:false"
+		},
+		{
+			"parameter": "LONG", 
+			"description": "<a href='https://www.coordonnees-gps.fr' target='_blank'>Longitude</a> (Ex. Paris : 2.3488)",
+			"xtype": "textfield",
+			"default_value": "2.3488",
+			"field": "width:150, allowBlank:false"
+		},
+		{
+			"parameter": "DELAY", 
+			"description": "Phase personnalisée (écart en min. [1-59])",
+			"xtype": "textfield",
+			"default_value": "30",
+			"field": "width:100, allowBlank:false"
+		}
+  ],
+	"scripts":
+	[
+		{
+			"name": "extdsun.php"
+		}
+	],
+	"devices":
+  [
+		{
+			"device_id": "sunphase",
+			"module_id": "51",
+			"type": "http",
+			"name_fr": "Soleil étendu - Phases",
+			"icon": "sun.png",
+			"utilisation_id": "35",
+			"parameters":
+			{
+				"VAR1": "plugin.parameters.LONG",
+				"VAR2": "plugin.parameters.LAT",
+      	"VAR3": "plugin.parameters.DELAY",
+				"value_type": "list",
+				"ignore_errors": 3,
+				"RAW_URL": "http://localhost/script/?exec=extdsun.php&long=[VAR1]&lat=[VAR2]&delay=[VAR3]",
+				"RAW_XPATH": "/SUN/STATUS",
+				"POLLING": "1"
+			},
+      "values":
+			[
+				{ "value": 1, "description": "Délai avant levé", "icon": "moon.png" },
+				{ "value": 2, "description": "Se lève", "icon": "sunrise.png" },
+				{ "value": 3, "description": "Est Levé", "icon": "sun.png" },
+				{ "value": 4, "description": "Délai après levé", "icon": "sun.png" },
+				{ "value": 5, "description": "Délai avant couché", "icon": "sun.png" },
+				{ "value": 6, "description": "Se couche", "icon": "sunrise.png" },
+				{ "value": 7, "description": "Est couché", "icon": "moon.png" },
+				{ "value": 8, "description": "Délai après couché", "icon": "moon.png" }
+			]
+		},
+		{
+			"device_id": "sunrise",
+			"parent_id": "sunphase",
+			"module_id": "51",
+			"type": "http",
+			"name_fr": "Soleil étendu - Levé",
+			"icon": "sunrise.png",
+			"utilisation_id": "35",
+			"parameters":
+			{
+				"VAR1": "plugin.parameters.LONG",
+				"VAR2": "plugin.parameters.LAT",
+      	"VAR3": "plugin.parameters.DELAY",
+				"value_type": "string",
+				"ignore_errors": 3,
+				"RAW_URL": "http://localhost/script/?exec=extdsun.php&long=[VAR1]&lat=[VAR2]&delay=[VAR3]",
+				"RAW_XPATH": "/SUN/SUNRISE",
+				"POLLING": "1"
+			}
+		},
+{
+			"device_id": "sunset",
+			"parent_id": "sunphase",
+			"module_id": "51",
+			"type": "http",
+			"name_fr": "Soleil étendu - Coucher",
+			"icon": "sunrise.png",
+			"utilisation_id": "35",
+			"parameters":
+			{
+				"VAR1": "plugin.parameters.LONG",
+				"VAR2": "plugin.parameters.LAT",
+      	"VAR3": "plugin.parameters.DELAY",
+				"value_type": "string",
+				"ignore_errors": 3,
+				"RAW_URL": "http://localhost/script/?exec=extdsun.php&long=[VAR1]&lat=[VAR2]&delay=[VAR3]",
+				"RAW_XPATH": "/SUN/SUNSET",
+				"POLLING": "1"
+			}
+		}
+  ]
+}
+
