@@ -1,7 +1,7 @@
 <?php
 	$xml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>";  
 	// *********************************************************************************************************************
-	// V1.0 : Script qui fournit les phases du soleil incluant des phases personnalisées en écart
+	// V1.04 : Script qui fournit les phases du soleil incluant des phases personnalisées en écart
 	//*************************************** *****************************************************************************
 	// latitude
   	$latitude = getArg("lat", $mandatory = true, $default = '48.8534');
@@ -51,7 +51,7 @@
 			$api_seleve_h -= 24;
 		}
 		
-		// AVANT LEVE
+		// AVANT LEVER
 		$api_avantleve_h =$api_seleve_h;
 		$api_avantleve_m = $api_seleve_m - $delay;
 		if ($api_avantleve_m < 0) {
@@ -63,7 +63,7 @@
 		}
 		
 
-		// LEVE
+		// LEVER
 		list($api_leve_h,$api_leve_m,$sec,$ampm) = sscanf($result['results']['sunrise'],"%d:%d:%d %s");
 		if ($ampm == 'PM') {
 			$api_leve_h += 12;
@@ -77,7 +77,7 @@
 		}
 		
 		
-		// APRES LEVE
+		// APRES LEVER
 		$api_apresleve_h =$api_leve_h;
 		$api_apresleve_m = $api_leve_m + $delay;
 		if ($api_apresleve_m > 59) {
@@ -88,6 +88,18 @@
 			}
 		}
 	
+		// ZENITH
+		list($api_noon_h,$api_noon_m,$sec,$ampm) = sscanf($result['results']['solar_noon'],"%d:%d:%d %s");
+		if ($ampm == 'PM') {
+			$api_noon_h += 12;
+		}
+		$api_noon_h += $gmt;
+		if ($api_noon_h < 0) {
+			$api_noon_h += 24;
+		}
+		if ($api_noon_h >= 24) {
+			$api_noon_h -= 24;
+		}	
 
 		//SE COUCHE
 		list($api_secouche_h,$api_secouche_m,$sec,$ampm) = sscanf($result['results']['sunset'],"%d:%d:%d %s");
@@ -103,7 +115,7 @@
 		}
 	
 
-		// AVANT COUCHE
+		// AVANT COUCHER
 		$api_avantcouche_h =$api_secouche_h;
 		$api_avantcouche_m = $api_secouche_m - $delay;
 		if ($api_avantcouche_m < 0) {
@@ -115,7 +127,7 @@
 		}
 		
 
-		// COUCHE
+		// COUCHER
 		list($api_couche_h,$api_couche_m,$sec,$ampm) = sscanf($result['results']['civil_twilight_end'],"%d:%d:%d %s");
 		if ($ampm == 'PM') {
 			$api_couche_h += 12;
@@ -129,7 +141,7 @@
 		}
 		
 
-		// APRES COUCHE
+		// APRES COUCHER
 		$api_aprescouche_h =$api_couche_h;
 		$api_aprescouche_m = $api_couche_m + $delay;
 		if ($api_aprescouche_m > 59) {
@@ -205,6 +217,14 @@
 			$api_aprescouche_m = "0".$api_aprescouche_m;
 		}
 		$api_aprescouche = $api_aprescouche_h.":".$api_aprescouche_m;
+		
+		if (strlen($api_noon_h) == 1) {
+			$api_noon_h = "0".$api_noon_h;
+		}
+		if (strlen($api_noon_m) == 1) {
+			$api_noon_m = "0".$api_noon_m;
+		}
+		$api_noon = $api_noon_h.":".$api_noon_m;
 
 		saveVariable('EXTDSUN_AVANTLEVE', $api_avantleve);
 		saveVariable('EXTDSUN_SELEVE', $api_seleve);
@@ -214,6 +234,7 @@
 		saveVariable('EXTDSUN_SECOUCHE', $api_secouche);
 		saveVariable('EXTDSUN_COUCHE', $api_couche);
 		saveVariable('EXTDSUN_APRESCOUCHE', $api_aprescouche);
+		saveVariable('EXTDSUN_ZENITH', $api_noon);
 	}
 
 	$avantleve = loadVariable('EXTDSUN_AVANTLEVE');
@@ -224,6 +245,7 @@
 	$secouche = loadVariable('EXTDSUN_SECOUCHE');
 	$couche = loadVariable('EXTDSUN_COUCHE');
 	$aprescouche = loadVariable('EXTDSUN_APRESCOUCHE');
+	$zenith = loadVariable('EXTDSUN_ZENITH');
 	if ($heurenum == $avantleve) 
 	{
 		$status = 1;
@@ -249,6 +271,9 @@
 	if ($heurenum == $aprescouche) {
 		$status = 8;
 	}
+	if ($heurenum == $zenith) {
+		$status = 12;
+	}
 	
 	// initialisation
 	if ($status == '')
@@ -267,7 +292,8 @@
 	$xml .=  "<SUN>";
 	$xml .=  "<STATUS>".$status."</STATUS>";
 	$xml .=  "<SUNSET>".$secouche."</SUNSET>";
-	$xml .=  "<SUNRISE>".$seleve."</SUNRISE>";
+	$xml .=  "<SUNRISE>".$leve."</SUNRISE>";
+	$xml .=  "<ZENITH>".$zenith."</ZENITH>";
 	$xml .=  "</SUN>";
 	sdk_header('text/xml');
 	echo $xml;

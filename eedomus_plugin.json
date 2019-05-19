@@ -2,11 +2,11 @@
 	"plugin_id": "extdsun",
 	"name_fr": "Soleil étendu",
 	"icon": "sun.png",
-	"version": "1.01",
+	"version": "1.04",
 	"creation_date": "2017-10-26",
-	"modification_date": "2017-01-27",
+	"modification_date": "2019-05-12",
 	"author": "Influman",
-	"description_fr": "Le Soleil, avec des phases supplémentaires décalées de x mn paramétrables<br>Avant levé, Se lève, Levé, Après levé, Avant couché, Se couche, Coucher, Après coucher",
+	"description_fr": "Le Soleil, avec des phases supplémentaires décalées de x mn paramétrables<br>Avant lever, Se lève, Lever, Après lever, Zenith, Avant coucher, Se couche, Coucher, Après coucher",
 	"description_en": "",
 	"description_es": "",
 	"description_it": "",
@@ -64,14 +64,15 @@
 			},
       "values":
 			[
-				{ "value": 1, "description": "Délai avant levé", "icon": "moon.png" },
+				{ "value": 1, "description": "Délai avant lever", "icon": "moon.png" },
 				{ "value": 2, "description": "Se lève", "icon": "sunrise.png" },
 				{ "value": 3, "description": "Est Levé", "icon": "sun.png" },
-				{ "value": 4, "description": "Délai après levé", "icon": "sun.png" },
-				{ "value": 5, "description": "Délai avant couché", "icon": "sun.png" },
+				{ "value": 4, "description": "Délai après lever", "icon": "sun.png" },
+				{ "value": 5, "description": "Délai avant coucher", "icon": "sun.png" },
 				{ "value": 6, "description": "Se couche", "icon": "sunrise.png" },
 				{ "value": 7, "description": "Est couché", "icon": "moon.png" },
-				{ "value": 8, "description": "Délai après couché", "icon": "moon.png" }
+				{ "value": 8, "description": "Délai après coucher", "icon": "moon.png" },
+				{ "value": 12, "description": "Zenith", "icon": "sun.png" }
 			]
 		},
 		{
@@ -79,14 +80,14 @@
 			"parent_id": "sunphase",
 			"module_id": "51",
 			"type": "http",
-			"name_fr": "Soleil étendu - Levé",
+			"name_fr": "Soleil étendu - Lever",
 			"icon": "sunrise.png",
 			"utilisation_id": "35",
 			"parameters":
 			{
 				"VAR1": "plugin.parameters.LONG",
 				"VAR2": "plugin.parameters.LAT",
-      	"VAR3": "plugin.parameters.DELAY",
+				"VAR3": "plugin.parameters.DELAY",
 				"value_type": "string",
 				"ignore_errors": 3,
 				"RAW_URL": "http://localhost/script/?exec=extdsun.php&long=[VAR1]&lat=[VAR2]&delay=[VAR3]",
@@ -94,7 +95,7 @@
 				"POLLING": "1"
 			}
 		},
-{
+		{
 			"device_id": "sunset",
 			"parent_id": "sunphase",
 			"module_id": "51",
@@ -106,14 +107,34 @@
 			{
 				"VAR1": "plugin.parameters.LONG",
 				"VAR2": "plugin.parameters.LAT",
-      	"VAR3": "plugin.parameters.DELAY",
+				"VAR3": "plugin.parameters.DELAY",
 				"value_type": "string",
 				"ignore_errors": 3,
 				"RAW_URL": "http://localhost/script/?exec=extdsun.php&long=[VAR1]&lat=[VAR2]&delay=[VAR3]",
 				"RAW_XPATH": "/SUN/SUNSET",
 				"POLLING": "1"
 			}
+		},
+		{
+			"device_id": "zenith",
+			"parent_id": "sunphase",
+			"module_id": "51",
+			"type": "http",
+			"name_fr": "Soleil étendu - Zenith",
+			"icon": "sun.png",
+			"utilisation_id": "35",
+			"parameters":
+			{
+				"VAR1": "plugin.parameters.LONG",
+				"VAR2": "plugin.parameters.LAT",
+				"VAR3": "plugin.parameters.DELAY",
+				"value_type": "string",
+				"ignore_errors": 3,
+				"RAW_URL": "http://localhost/script/?exec=extdsun.php&long=[VAR1]&lat=[VAR2]&delay=[VAR3]",
+				"RAW_XPATH": "/SUN/ZENITH",
+				"POLLING": "1"
+			}
 		}
-  ]
+	]
 }
 
